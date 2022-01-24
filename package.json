@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/TranThang-2804/Discord_BOT/issues"
   },
-  "homepage": "https://github.com/TranThang-2804/Discord_BOT#readme"
+  "homepage": "https://github.com/TranThang-2804/Discord_BOT#readme",
+  "dependencies": {
+    "discord.js": "^13.6.0"
+  }
 }
