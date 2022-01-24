@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/TranThang-2804/Discord_BOT#readme",
   "dependencies": {
-    "discord.js": "^13.6.0"
+    "discord.js": "^13.6.0",
+    "dotenv": "^14.2.0"
   }
 }
