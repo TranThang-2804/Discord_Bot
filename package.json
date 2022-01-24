@@ -1,0 +1,19 @@
+{
+  "name": "discord_bot_project",
+  "version": "1.0.0",
+  "description": "This project is to create an music bot with voice commands and other utilities",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TranThang-2804/Discord_BOT.git"
+  },
+  "author": "Tran Thang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TranThang-2804/Discord_BOT/issues"
+  },
+  "homepage": "https://github.com/TranThang-2804/Discord_BOT#readme"
+}
