@@ -42,20 +42,18 @@ module.exports = {
 
               const { joinVoiceChannel } = require('@discordjs/voice');
 
+              
+
               const connection = joinVoiceChannel({
                      channelId: message.member.voice.channel.id,
                      guildId: message.channel.guild.id,
                      adapterCreator: message.channel.guild.voiceAdapterCreator,
               });
-
+              
               const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, AudioPlayerStatus} = require('@discordjs/voice');
 
-              const player = createAudioPlayer({
-	              behaviors: {
-		       noSubscriber: NoSubscriberBehavior.Pause,
-	              },
-              });
-
+              const player = createAudioPlayer();
+              player.play
 
               const videoFinder = async(query) => {
                      const videoResult = await ytSearch(query);
@@ -63,24 +61,18 @@ module.exports = {
               }
 
               const video = await videoFinder(args.join(' '));
-
+              
               if (video) {
-                     const stream = ytdl(video.url, { filter: 'audioonly' }, { highWaterMark: 1 << 32 });
+                     const stream = ytdl(video.url, { filter: 'audioonly' }, {quality: 'highestaudio'});
                      const resource = createAudioResource(stream);
                      player.play(resource);
     
                      // Subscribe the connection to the audio player (will play audio on the voice connection)
-                     const subscription = connection.subscribe(player);
+                     connection.subscribe(player);
 
-                     // subscription could be undefined if the connection is destroyed!
-                     // if (subscription) {
-	              //        // Unsubscribe after 5 seconds (stop playing audio on the voice connection)
-	              //        setTimeout(() => subscription.unsubscribe(), 5_000);
-                     // }
-
-                     player.on(AudioPlayerStatus.Idle, () => {
-                            player.play(getNextResource());
-                     });
+                     // player.on(AudioPlayerStatus.Idle, () => {
+                     //        player.play(getNextResource());
+                     // });
 
                      await message.reply(`:thumbsup: Now Playing ***${video.title}***`);
               } else {
