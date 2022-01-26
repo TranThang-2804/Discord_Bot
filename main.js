@@ -1,14 +1,18 @@
-const DISCORD = require('discord.js');
+const Discord = require('discord.js');
+const { Client, Intents } = require('discord.js');
 
-const CLIENT = new DISCORD.Client({ intents: [DISCORD.Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
 
 const dotenv = require('dotenv');
 
 dotenv.config();
 
+client.commands = new Discord.Collection();
+client.events = new Discord.Collection();
 
-CLIENT.once('ready', () => {
-       console.log('MONDAY is online');
-})
 
-CLIENT.login(process.env.MONDAY_TOKEN);
+['command_handler.js', 'event_handler.js'].forEach(handler => {
+       require(`./handlers/${handler}`)(client, Discord)
+});
+
+client.login(process.env.MONDAY_TOKEN);
