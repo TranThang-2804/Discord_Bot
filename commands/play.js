@@ -26,20 +26,6 @@ module.exports = {
                      }
               }
 
-              if(validURL(args[0])) {
-                     const connection = await voiceChannel.join();
-                     const stream = ytdl(args[0], {filter: 'audioonly'});
-
-                     connection.play(stream, {seek: 0, volumn: 1})
-                     .on('finish', () =>{
-                            voiceChannel.leave();
-                     });
-
-                     await message.reply(`:thumbsup: Now Playing ***${args[0]}***`);
-
-                     return;
-              }
-
               const { joinVoiceChannel } = require('@discordjs/voice');
 
 
@@ -51,17 +37,42 @@ module.exports = {
               
               const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, AudioPlayerStatus} = require('@discordjs/voice');
 
-              const player = createAudioPlayer();
+              const player = createAudioPlayer({
+                     behaviors: {
+                            noSubscriber: NoSubscriberBehavior.Pause,
+                     },
+              });
+
+              player.on('error', error => {
+                     console.error('Error:', error.message, 'with track', error.resource.metadata);
+              });
 
               const videoFinder = async(query) => {
                      const videoResult = await ytSearch(query);
                      return (videoResult.videos.length >1 ) ? videoResult.videos[0] : null;
               }
 
+              // if args is a link then play the link
+              if(validURL(args[0])) {
+                     const stream = ytdl(video.url, { filter: format => format.container === 'mp4' }, { quality: 'lowest'});
+                     const resource = createAudioResource(stream);
+                     
+                     player.play(resource);
+                     
+                     // Subscribe the connection to the audio player (will play audio on the voice connection)
+                     connection.subscribe(player);
+
+                     await message.reply(`:thumbsup: Now Playing ***${args[0]}***`);
+
+                     return;
+              }
+
+              // Else if args is not a link then find the video with that keyword on youtube
+
               const video = await videoFinder(args.join(' '));
               
               if (video) {
-                     const stream = ytdl(video.url, { filter: format => format.container === 'mp4' });
+                     const stream = ytdl(video.url, { filter: format => format.container === 'mp4' }, { highWaterMark: 1<<25 });
                      const resource = createAudioResource(stream);
                      
                      player.play(resource);
