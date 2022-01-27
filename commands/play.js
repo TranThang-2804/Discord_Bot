@@ -33,6 +33,8 @@ module.exports = {
               
               const { joinVoiceChannel } = require('@discordjs/voice');
 
+              
+
               const connection = joinVoiceChannel({
                      channelId: message.member.voice.channel.id,
                      guildId: message.channel.guild.id,
