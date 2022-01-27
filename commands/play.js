@@ -26,23 +26,12 @@ module.exports = {
                      }
               }
 
-              if(validURL(args[0])) {
-                     const connection = await voiceChannel.join();
-                     const stream = ytdl(args[0], {filter: 'audioonly'});
-
-                     connection.play(stream, {seek: 0, volumn: 1})
-                     .on('finish', () =>{
-                            voiceChannel.leave();
-                     });
-
-                     await message.reply(`:thumbsup: Now Playing ***${args[0]}***`);
-
-                     return;
+              const videoFinder = async(query) => {
+                     const videoResult = await ytSearch(query);
+                     return (videoResult.videos.length >1 ) ? videoResult.videos[0] : null;
               }
-
-              const { joinVoiceChannel } = require('@discordjs/voice');
-
               
+              const { joinVoiceChannel } = require('@discordjs/voice');
 
               const connection = joinVoiceChannel({
                      channelId: message.member.voice.channel.id,
@@ -53,30 +42,32 @@ module.exports = {
               const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, AudioPlayerStatus} = require('@discordjs/voice');
 
               const player = createAudioPlayer();
-              player.play
 
-              const videoFinder = async(query) => {
-                     const videoResult = await ytSearch(query);
-                     return (videoResult.videos.length >1 ) ? videoResult.videos[0] : null;
-              }
+              var stream;
 
-              const video = await videoFinder(args.join(' '));
-              
-              if (video) {
-                     const stream = ytdl(video.url, { filter: 'audioonly' }, {quality: 'highestaudio'});
-                     const resource = createAudioResource(stream);
-                     player.play(resource);
-    
-                     // Subscribe the connection to the audio player (will play audio on the voice connection)
-                     connection.subscribe(player);
-
-                     // player.on(AudioPlayerStatus.Idle, () => {
-                     //        player.play(getNextResource());
-                     // });
-
-                     await message.reply(`:thumbsup: Now Playing ***${video.title}***`);
+              if(validURL(args[0])) {
+                     stream = ytdl(args[0], { filter: format => format.container === 'mp4' });
+                     await message.reply(`:thumbsup: Now Playing ***${args[0]}***`);
               } else {
-                     message.channel.send('No video results found');
+                     const video = await videoFinder(args.join(' '));
+              
+                     if (video) {
+                            stream = ytdl(video.url, { filter: format => format.container === 'mp4' });
+                            await message.reply(`:thumbsup: Now Playing ***${video.title}***`);
+                     } else {
+                            message.channel.send('No video results found');
+                     }
               }
+
+              const resource = createAudioResource(stream);
+                     
+              player.play(resource);
+                     
+              // Subscribe the connection to the audio player (will play audio on the voice connection)
+              connection.subscribe(player);
+
+              player.on(AudioPlayerStatus.Idle, () => {
+                     player.play(getNextResource());
+              });
        }
 }
