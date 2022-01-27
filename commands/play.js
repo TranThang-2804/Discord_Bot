@@ -26,14 +26,22 @@ module.exports = {
                      }
               }
 
-              const videoFinder = async(query) => {
-                     const videoResult = await ytSearch(query);
-                     return (videoResult.videos.length >1 ) ? videoResult.videos[0] : null;
+              if(validURL(args[0])) {
+                     const connection = await voiceChannel.join();
+                     const stream = ytdl(args[0], {filter: 'audioonly'});
+
+                     connection.play(stream, {seek: 0, volumn: 1})
+                     .on('finish', () =>{
+                            voiceChannel.leave();
+                     });
+
+                     await message.reply(`:thumbsup: Now Playing ***${args[0]}***`);
+
+                     return;
               }
-              
+
               const { joinVoiceChannel } = require('@discordjs/voice');
 
-              
 
               const connection = joinVoiceChannel({
                      channelId: message.member.voice.channel.id,
@@ -45,31 +53,29 @@ module.exports = {
 
               const player = createAudioPlayer();
 
-              var stream;
-
-              if(validURL(args[0])) {
-                     stream = ytdl(args[0], { filter: format => format.container === 'mp4' });
-                     await message.reply(`:thumbsup: Now Playing ***${args[0]}***`);
-              } else {
-                     const video = await videoFinder(args.join(' '));
-              
-                     if (video) {
-                            stream = ytdl(video.url, { filter: format => format.container === 'mp4' });
-                            await message.reply(`:thumbsup: Now Playing ***${video.title}***`);
-                     } else {
-                            message.channel.send('No video results found');
-                     }
+              const videoFinder = async(query) => {
+                     const videoResult = await ytSearch(query);
+                     return (videoResult.videos.length >1 ) ? videoResult.videos[0] : null;
               }
 
-              const resource = createAudioResource(stream);
+              const video = await videoFinder(args.join(' '));
+              
+              if (video) {
+                     const stream = ytdl(video.url, { filter: format => format.container === 'mp4' });
+                     const resource = createAudioResource(stream);
                      
-              player.play(resource);
+                     player.play(resource);
                      
-              // Subscribe the connection to the audio player (will play audio on the voice connection)
-              connection.subscribe(player);
+                     // Subscribe the connection to the audio player (will play audio on the voice connection)
+                     connection.subscribe(player);
 
-              player.on(AudioPlayerStatus.Idle, () => {
-                     player.play(getNextResource());
-              });
+                     // player.on(AudioPlayerStatus.Idle, () => {
+                     //        player.play(getNextResource());
+                     // });
+
+                     await message.reply(`:thumbsup: Now Playing ***${video.title}***`);
+              } else {
+                     message.channel.send('No video results found');
+              }
        }
 }
