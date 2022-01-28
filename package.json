@@ -17,22 +17,11 @@
   },
   "homepage": "https://github.com/TranThang-2804/Discord_BOT#readme",
   "dependencies": {
-    "@discordjs/opus": "github:discordjs/opus",
-    "@discordjs/rest": "^0.3.0",
-    "@discordjs/voice": "^0.8.0",
-    "bufferutil": "^4.0.6",
-    "discord-api-types": "^0.26.1",
-    "discord.js": "^13.6.0",
-    "distube": "^3.2.1",
+    "discord-player": "^5.1.0",
+    "discord.js": "^13.1.0",
+    "ffmpeg-static": "^4.4.0",
+    "ms": "^3.0.0-canary.1",
     "dotenv": "^14.2.0",
-    "erlpack": "github:discord/erlpack",
-    "ffmpeg-static": "^4.4.1",
-    "fs": "^0.0.1-security",
-    "libsodium-wrappers": "^0.7.9",
-    "node": "^14.18.3",
-    "utf-8-validate": "^5.0.8",
-    "yt-search": "^2.10.3",
-    "ytdl-core": "^4.10.0",
-    "zlib-sync": "^0.1.7"
+    "opusscript": "^0.0.8"
   }
 }

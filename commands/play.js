@@ -1,92 +1,36 @@
-const ytdl = require('ytdl-core');
-const ytSearch = require('yt-search');
+const { QueryType } = require('discord-player');
 
 module.exports = {
-       name: 'play',
-       description: 'Joins and plays music from video from youtube',
-       async execute(client, message, args, Discord) {
-              const voiceChannel = message.member.voice.channel;
+    name: 'play',
+    aliases: ['p'],
+    utilisation: '{prefix}play [song name/URL]',
+    voiceChannel: true,
 
-              if(!voiceChannel) return message.channel.send('You need to be in a channel to execute this command!');
+    async execute(client, message, args, Discord) {
+        if (!args[0]) return message.channel.send(`Please enter a valid search ${message.author}... try again ? ❌`);
 
-              const permissions = voiceChannel.permissionsFor(message.client.user);
+        const res = await player.search(args.join(' '), {
+            requestedBy: message.member,
+            searchEngine: QueryType.AUTO
+        });
 
-              if(!permissions.has('CONNECT')) return message.channel.send('You dont have the fucking correct permission');
-              if(!permissions.has('SPEAK')) return message.channel.send('You dont have the fucking correct permission');
+        if (!res || !res.tracks.length) return message.channel.send(`No results found ${message.author}... try again ? ❌`);
 
-              if(!args.length) return message.channel.send("You forgot the name of the audio you fucking idiot!");
+        const queue = await player.createQueue(message.guild, {
+            metadata: message.channel
+        });
 
+        try {
+            if (!queue.connection) await queue.connect(message.member.voice.channel);
+        } catch {
+            await player.deleteQueue(message.guild.id);
+            return message.channel.send(`I can't join the voice channel ${message.author}... try again ? ❌`);
+        }
 
-              const validURL = (str) => {
-                     var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([w#!:.?+=&%!\-\/]))?/;
-                     if(!regex.test(str)) {
-                            return false;
-                     } else {
-                            return true;
-                     }
-              }
+        await message.channel.send(`Loading your ${res.playlist ? 'playlist' : 'track'}... 🎧`);
 
-              const { joinVoiceChannel } = require('@discordjs/voice');
+        res.playlist ? queue.addTracks(res.tracks) : queue.addTrack(res.tracks[0]);
 
-
-              const connection = joinVoiceChannel({
-                     channelId: message.member.voice.channel.id,
-                     guildId: message.channel.guild.id,
-                     adapterCreator: message.channel.guild.voiceAdapterCreator,
-              });
-              
-              const { createAudioPlayer, NoSubscriberBehavior, createAudioResource, AudioPlayerStatus} = require('@discordjs/voice');
-
-              const player = createAudioPlayer({
-                     behaviors: {
-                            noSubscriber: NoSubscriberBehavior.Pause,
-                     },
-              });
-
-              player.on('error', error => {
-                     console.error('Error:', error.message, 'with track', error.resource.metadata);
-              });
-
-              const videoFinder = async(query) => {
-                     const videoResult = await ytSearch(query);
-                     return (videoResult.videos.length >1 ) ? videoResult.videos[0] : null;
-              }
-
-              // if args is a link then play the link
-              if(validURL(args[0])) {
-                     const stream = ytdl(video.url, { filter: format => format.container === 'mp4' }, { quality: 'lowest'});
-                     const resource = createAudioResource(stream);
-                     
-                     player.play(resource);
-                     
-                     // Subscribe the connection to the audio player (will play audio on the voice connection)
-                     connection.subscribe(player);
-
-                     await message.reply(`:thumbsup: Now Playing ***${args[0]}***`);
-
-                     return;
-              }
-
-              // Else if args is not a link then find the video with that keyword on youtube
-
-              const video = await videoFinder(args.join(' '));
-              
-              if (video) {
-                     const stream = ytdl(video.url, { filter: format => format.container === 'mp4' }, { highWaterMark: 1<<25 });
-                     const resource = createAudioResource(stream);
-                     
-                     player.play(resource);
-                     
-                     // Subscribe the connection to the audio player (will play audio on the voice connection)
-                     connection.subscribe(player);
-
-                     // player.on(AudioPlayerStatus.Idle, () => {
-                     //        player.play(getNextResource());
-                     // });
-
-                     await message.reply(`:thumbsup: Now Playing ***${video.title}***`);
-              } else {
-                     message.channel.send('No video results found');
-              }
-       }
-}
+        if (!queue.playing) await queue.play();
+    },
+};
