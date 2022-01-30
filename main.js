@@ -27,6 +27,9 @@ client.distube = new DisTube(client, {
        ]
      });
 
+require('./Initialize_bot/initialize')(client, Discord);
+
+
 ['command_handler.js', 'event_handler.js'].forEach(handler => {
        require(`./handlers/${handler}`)(client, Discord)
 });

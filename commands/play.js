@@ -1,3 +1,5 @@
+const initialize = require("../Initialize_bot/initialize");
+
 module.exports = {
        name: 'play',
        aliases: ['p'],
@@ -10,12 +12,21 @@ module.exports = {
               // if(!permissions.has('SPEAK')) return message.channel.send('You dont have the fucking correct permission');
               // if(!args.length) return message.channel.send("You forgot the name of the audio you fucking idiot!");
 
-              const isVoiceChannelEmpty = () => {
+              isVoiceChannelEmpty = () => {
                      const voiceChannel = message.member.voice.channel;
                      if (!voiceChannel) return false;
                      const members = voiceChannel.members.filter(m => !m.user.bot);
                      return members.size;
               };
+              console.log(client.initialized);
+              if(!client.initialized){
+                     client.on('voiceStateUpdate', () => {
+                            if(!isVoiceChannelEmpty()){
+                                   client.distube.voices.leave(message);
+                            };
+                     })
+                     client.initialized = true;
+              }
 
               if(!voiceChannel) return message.channel.send('You need to be in a channel to execute this command!');
 
@@ -23,27 +34,10 @@ module.exports = {
                      const string = args.join(' ');
                      if (!string) return message.channel.send(`${client.emotes.error} | Please enter a song url or query to search.`);
 
-                     client.on('voiceStateUpdate', () => {
-                            if(!isVoiceChannelEmpty()){
-                                   client.distube.voices.leave(message);
-                            };
-                     })
-
                      client.distube.play(message.member.voice.channel, string, {
                             member: message.member,
                             textChannel: message.channel,
                             message
-                     });
-
-                     client.distube.on("playSong", (queue, song) => {
-                            let msg = `:thumbsup: Now Playing ***\`${song.name}\` *** - \`${song.formattedDuration}\``
-                            if (song.playlist) msg = `Playlist: ${song.playlist.name}\n${msg}`
-                            queue.textChannel.send(msg)
-                     });
-
-                     client.distube.on("error", (channel, error) => {
-                            channel.send('There is some unexpected error');
-                            console.log(error);
                      });
               }
        }
