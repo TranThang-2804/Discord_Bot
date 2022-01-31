@@ -1,4 +1,4 @@
 module.exports = (client, message, args, Discord) => {
-       client.user.setPresence({ activities: [{ name: 'with TranThang ❤️' }], status: 'online' });
+       client.user.setPresence({ activities: [{ name: 'from TranThang ❤️' }], status: 'online' });
        console.log('MONDAY is online');
 }

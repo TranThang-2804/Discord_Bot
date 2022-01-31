@@ -1,10 +1,12 @@
+const initialize = require("../Initialize_bot/initialize");
+
 module.exports = {
-       name: 'play',
-       aliases: ['ps'],
-       description: 'Place this audio at queue beginning and play it right away',
+       name: 'insert',
+       aliases: ['p'],
+       description: 'Insert audio into the queue',
        inVoiceChannel: true,
-       execute: async (client, message, args, Discord)  => {
-       const voiceChannel = message.member.voice.channel;
+       execute: async (client, message, args, Discord) => {
+              const voiceChannel = message.member.voice.channel;
               // const permissions = voiceChannel.permissionsFor(message.client.user);
               // if(!permissions.has('CONNECT')) return message.channel.send('You dont have the fucking correct permission');
               // if(!permissions.has('SPEAK')) return message.channel.send('You dont have the fucking correct permission');
@@ -35,9 +37,8 @@ module.exports = {
                      client.distube.play(message.member.voice.channel, string, {
                             member: message.member,
                             textChannel: message.channel,
-                            message,
-                            skip: true
+                            message
                      });
               }
        }
-     }
+}

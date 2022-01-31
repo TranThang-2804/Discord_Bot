@@ -5,6 +5,9 @@ module.exports = (client, Discord) => {
               queue.textChannel.send(msg)
        });
 
+       client.distube.on("addSong", (queue, song) => queue.textChannel.send(
+              `👉 ADDED 🎶${song.name}🎶 - \`${song.formattedDuration}\` to the queue by ${song.user}.`
+          ));
        client.distube.on("error", (channel, error) => {
               channel.send('There is some unexpected error');
               console.log(error);
