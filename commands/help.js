@@ -12,8 +12,8 @@ module.exports = {
       
               const commands = client.commands.filter(x => x.showHelp !== false);
       
-              embed.setDescription('This code comes from Tran Thang GitHub project \n https://github.com/TranThang-2804/Discord_BOT.git');
-              embed.addField(`Enabled - ${commands.size}`, client.commands.map(cmd => `\`${cmd.name}:\` ${cmd.description}`).join('\n'));
+              embed.setDescription('This bot comes from Tran Thang GitHub project \n https://github.com/TranThang-2804/Discord_BOT.git (currently is private)');
+              embed.addField(`Enabled - ${commands.size}`, client.commands.map(cmd => `\`${client.Prefix}${cmd.name}\`: ${cmd.description}`).join('\n'));
               embed.setTimestamp();
               embed.setFooter('Music comes first - MONDAY always with you ❤️', message.author.avatarURL({ dynamic: true }));
       

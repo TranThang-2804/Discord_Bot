@@ -18,7 +18,7 @@ module.exports = {
                      const members = voiceChannel.members.filter(m => !m.user.bot);
                      return members.size;
               };
-              console.log(client.initialized);
+
               if(!client.initialized){
                      client.on('voiceStateUpdate', () => {
                             if(!isVoiceChannelEmpty()){

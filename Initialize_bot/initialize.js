@@ -1,6 +1,6 @@
 module.exports = (client, Discord) => {
        client.distube.on("playSong", (queue, song) => {
-              let msg = `:thumbsup: Now Playing ***\`${song.name}\` *** - \`${song.formattedDuration}\``
+              let msg = `:thumbsup: Now Playing 🎶 ***\`${song.name}\` *** 🎶 - \`${song.formattedDuration}\``
               if (song.playlist) msg = `Playlist: ${song.playlist.name}\n${msg}`
               queue.textChannel.send(msg)
        });
