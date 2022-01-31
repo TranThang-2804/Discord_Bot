@@ -28,11 +28,11 @@ module.exports = {
                      client.initialized = true;
               }
 
-              if(!voiceChannel) return message.channel.send('You need to be in a channel to execute this command!');
+              if(!voiceChannel) return message.channel.send('😵 You need to be in a channel to execute this command!');
 
               else {
                      const string = args.join(' ');
-                     if (!string) return message.channel.send(`| Please enter a song url or query to search.`);
+                     if (!string) return message.channel.send(`😵 | Please enter a song url or query to search.`);
 
                      client.distube.play(message.member.voice.channel, string, {
                             member: message.member,

@@ -2,7 +2,7 @@ module.exports = {
        name: 'customlol',
        aliases: [],
        utilisation: '{prefix}customlol',
-       description: 'This is for spinning teams for lol custom voice chat room (prototype and havent being working yet',
+       description: 'This is for spinning teams for lol custom game (prototype and havent being working yet)',
        async execute(client, message, args, Discord) {
               const embed = new Discord.MessageEmbed();
 

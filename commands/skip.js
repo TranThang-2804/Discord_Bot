@@ -9,7 +9,7 @@ module.exports = {
                      const song = await queue.skip();
                      message.channel.send(`\`Skipped!\``);
               } catch (e) {
-              message.channel.send(`OOPS there is some error :(`);
+              message.channel.send(`😵 OOPS there is some error :(`);
               }
        }
 }
