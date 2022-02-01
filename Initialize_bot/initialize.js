@@ -13,5 +13,7 @@ module.exports = (client, Discord) => {
               console.log(error);
        });
 
-       client.initialized = false;
+       client.distube.on("empty", queue => 
+              queue.textChannel.send("Channel is empty. Leaving the channel")
+       );
 }

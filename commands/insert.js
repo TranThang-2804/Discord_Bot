@@ -12,22 +12,6 @@ module.exports = {
               // if(!permissions.has('SPEAK')) return message.channel.send('You dont have the fucking correct permission');
               // if(!args.length) return message.channel.send("You forgot the name of the audio you fucking idiot!");
 
-              isVoiceChannelEmpty = () => {
-                     const voiceChannel = message.member.voice.channel;
-                     if (!voiceChannel) return false;
-                     const members = voiceChannel.members.filter(m => !m.user.bot);
-                     return members.size;
-              };
-
-              if(!client.initialized){
-                     client.on('voiceStateUpdate', () => {
-                            if(!isVoiceChannelEmpty()){
-                                   client.distube.voices.leave(message);
-                            };
-                     })
-                     client.initialized = true;
-              }
-
               if(!voiceChannel) return message.channel.send('😵 You need to be in a channel to execute this command!');
 
               else {

@@ -18,6 +18,7 @@ client.Prefix = process.env.PREFIX;
 client.distube = new DisTube(client, {
        leaveOnStop: false,
        emitNewSongOnly: true,
+       emptyCooldown: 5,
        emitAddSongWhenCreatingQueue: false,
        emitAddListWhenCreatingQueue: false,
        plugins: [
