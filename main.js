@@ -19,6 +19,7 @@ client.distube = new DisTube(client, {
        leaveOnStop: false,
        emitNewSongOnly: true,
        emptyCooldown: 5,
+       leaveOnFinish: true,
        emitAddSongWhenCreatingQueue: false,
        emitAddListWhenCreatingQueue: false,
        plugins: [
