@@ -22,7 +22,10 @@ module.exports = (client, Discord) => {
        });
 
        client.distube.on("finish", queue => {
-              queue.textChannel.send("No more song in queue 😓 so I'm leaving ...")
+              queue.textChannel.send("No more song in queue 😓 so I'm leaving ...");
+              queue.stop();
+              queue.delete();
+              queue.voice.leave();
        });
 
        client.distube.on("empty", queue => {
